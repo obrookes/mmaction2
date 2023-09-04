@@ -39,7 +39,7 @@ train_pipeline = [
     dict(type="RandomResizedCrop"),
     dict(type="Resize", scale=(224, 224), keep_ratio=False),
     dict(type="Flip", flip_ratio=0.5),
-    dict(type="FormatShape", input_format="NCTHW"),
+    dict(type="FormatShape", input_format="NCHW"),
     dict(type="PackActionInputs"),
 ]
 
@@ -49,7 +49,7 @@ val_pipeline = [
     dict(type="DecordDecode"),
     dict(type="Resize", scale=(-1, 224)),
     dict(type="CenterCrop", crop_size=224),
-    dict(type="FormatShape", input_format="NCTHW"),
+    dict(type="FormatShape", input_format="NCHW"),
     dict(type="PackActionInputs"),
 ]
 
@@ -59,7 +59,7 @@ test_pipeline = [
     dict(type="DecordDecode"),
     dict(type="Resize", scale=(-1, 224)),
     dict(type="ThreeCrop", crop_size=224),
-    dict(type="FormatShape", input_format="NCTHW"),
+    dict(type="FormatShape", input_format="NCHW"),
     dict(type="PackActionInputs"),
 ]
 
