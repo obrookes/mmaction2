@@ -28,6 +28,8 @@ model = dict(
     )
 )
 
+num_frames = 16
+
 train_pipeline = [
     dict(type="DecordInit", **file_client_args),
     dict(type="UniformSample", clip_len=num_frames, num_clips=1),
