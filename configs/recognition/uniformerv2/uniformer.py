@@ -125,13 +125,40 @@ test_dataloader = dict(
     ),
 )
 
+
+base_lr = 2e-5
+optim_wrapper = dict(
+    optimizer=dict(type="AdamW", lr=base_lr, betas=(0.9, 0.999), weight_decay=0.05),
+    paramwise_cfg=dict(norm_decay_mult=0.0, bias_decay_mult=0.0),
+    clip_grad=dict(max_norm=20, norm_type=2),
+)
+
+param_scheduler = [
+    dict(
+        type="LinearLR",
+        start_factor=1 / 20,
+        by_epoch=True,
+        begin=0,
+        end=5,
+        convert_to_iter_based=True,
+    ),
+    dict(
+        type="CosineAnnealingLR",
+        eta_min_ratio=1 / 20,
+        by_epoch=True,
+        begin=5,
+        end=24,
+        convert_to_iter_based=True,
+    ),
+]
+
+train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=24, val_begin=1, val_interval=1)
+val_cfg = dict(type="ValLoop")
+test_cfg = dict(type="TestLoop")
+
 train_evaluator = dict(type="AccMetric", metric_list=("mean_average_precision"))
 val_evaluator = dict(type="AccMetric", metric_list=("mean_average_precision"))
 test_evaluator = dict(type="AccMetric", metric_list=("mean_average_precision"))
-
-train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=50, val_begin=1, val_interval=1)
-val_cfg = dict(type="ValLoop")
-test_cfg = dict(type="TestLoop")
 
 default_hooks = dict(checkpoint=dict(interval=3, max_keep_ckpts=3))
 
@@ -140,4 +167,3 @@ default_hooks = dict(checkpoint=dict(interval=3, max_keep_ckpts=3))
 #       or not by default.
 #   - `base_batch_size` = (1 GPUs) x (16 samples per GPU).
 auto_scale_lr = dict(enable=True, base_batch_size=8)
-
