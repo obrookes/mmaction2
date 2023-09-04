@@ -80,8 +80,10 @@ test_pipeline = [
     dict(type="PackActionInputs"),
 ]
 
+batch_size = 8
+
 train_dataloader = dict(
-    batch_size=8,
+    batch_size=batch_size,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type="DefaultSampler", shuffle=True),
@@ -94,7 +96,7 @@ train_dataloader = dict(
     ),
 )
 val_dataloader = dict(
-    batch_size=8,
+    batch_size=batch_size,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type="DefaultSampler", shuffle=False),
@@ -109,7 +111,7 @@ val_dataloader = dict(
 )
 
 test_dataloader = dict(
-    batch_size=8,
+    batch_size=batch_size,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type="DefaultSampler", shuffle=False),
