@@ -5,7 +5,7 @@ _base_ = [
 ]
 
 load_from = (
-    "tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb_20220906-cd10898e.pth"
+    "pretrained_models/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb_20220906-cd10898e.pth"
 )
 
 # dataset settings
