@@ -11,7 +11,7 @@ ann_file_test = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/an
 file_client_args = dict(io_backend="disk")
 
 num_frames = 16
-batch_size = 8
+batch_size = 3
 num_classes = 2
 
 # model settings
@@ -40,6 +40,7 @@ model = dict(
     ),
     cls_head=dict(
         type="TimeSformerHead",
+        in_channels=1024,
         num_classes=num_classes,
     ),
     data_preprocessor=dict(
