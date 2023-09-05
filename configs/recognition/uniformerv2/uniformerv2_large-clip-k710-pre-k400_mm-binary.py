@@ -40,6 +40,7 @@ model = dict(
     ),
     cls_head=dict(
         type="TimeSformerHead",
+        in_channels=1024,
         num_classes=2,
     ),
     data_preprocessor=dict(

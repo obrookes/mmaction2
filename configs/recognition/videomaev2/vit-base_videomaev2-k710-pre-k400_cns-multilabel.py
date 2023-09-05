@@ -32,6 +32,7 @@ model = dict(
     cls_head=dict(
         type="TimeSformerHead",
         num_classes=num_classes,
+        in_channels=768,
         loss_cls=dict(type="BCELossWithLogits"),
         multi_class=True,
     ),
