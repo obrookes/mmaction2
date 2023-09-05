@@ -11,6 +11,8 @@ ann_file_test = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/an
 file_client_args = dict(io_backend="disk")
 
 num_frames = 16
+batch_size = 8
+num_classes = 2
 
 # model settings
 model = dict(
@@ -29,7 +31,7 @@ model = dict(
     ),
     cls_head=dict(
         type="TimeSformerHead",
-        num_classes=2,
+        num_classes=num_classes,
         in_channels=768,
     ),
     data_preprocessor=dict(
@@ -66,15 +68,13 @@ val_pipeline = [
 
 test_pipeline = [
     dict(type="DecordInit"),
-    dict(type="SampleFrames", clip_len=16, num_clips=1, test_mode=True),
+    dict(type="SampleFrames", clip_len=num_frames, num_clips=1, test_mode=True),
     dict(type="DecordDecode"),
     dict(type="Resize", scale=(-1, 224)),
     dict(type="ThreeCrop", crop_size=224),
     dict(type="FormatShape", input_format="NCTHW"),
     dict(type="PackActionInputs"),
 ]
-
-batch_size = 8
 
 train_dataloader = dict(
     batch_size=batch_size,
@@ -86,7 +86,7 @@ train_dataloader = dict(
         ann_file=ann_file_train,
         data_prefix=dict(video=data_root),
         pipeline=train_pipeline,
-        num_classes=2,
+        num_classes=num_classes,
     ),
 )
 val_dataloader = dict(
@@ -100,7 +100,7 @@ val_dataloader = dict(
         data_prefix=dict(video=data_root),
         pipeline=val_pipeline,
         test_mode=True,
-        num_classes=2,
+        num_classes=num_classes,
     ),
 )
 
@@ -115,7 +115,7 @@ test_dataloader = dict(
         data_prefix=dict(video=data_root),
         pipeline=test_pipeline,
         test_mode=True,
-        num_classes=2,
+        num_classes=num_classes,
     ),
 )
 

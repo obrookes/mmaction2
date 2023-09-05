@@ -11,6 +11,8 @@ ann_file_test = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/an
 file_client_args = dict(io_backend="disk")
 
 num_frames = 16
+batch_size = 8
+num_classes = 2
 
 # model settings
 model = dict(
@@ -74,8 +76,6 @@ test_pipeline = [
     dict(type="PackActionInputs"),
 ]
 
-batch_size = 8
-
 train_dataloader = dict(
     batch_size=batch_size,
     num_workers=8,
@@ -86,7 +86,7 @@ train_dataloader = dict(
         ann_file=ann_file_train,
         data_prefix=dict(video=data_root),
         pipeline=train_pipeline,
-        num_classes=2,
+        num_classes=num_classes,
     ),
 )
 val_dataloader = dict(
@@ -100,7 +100,7 @@ val_dataloader = dict(
         data_prefix=dict(video=data_root),
         pipeline=val_pipeline,
         test_mode=True,
-        num_classes=2,
+        num_classes=num_classes,
     ),
 )
 
@@ -115,7 +115,7 @@ test_dataloader = dict(
         data_prefix=dict(video=data_root),
         pipeline=test_pipeline,
         test_mode=True,
-        num_classes=2,
+        num_classes=num_classes,
     ),
 )
 

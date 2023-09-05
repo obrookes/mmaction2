@@ -2,17 +2,18 @@ _base_ = ["../../_base_/default_runtime.py"]
 
 load_from = "pretrained_models/uniformerv2-large-p14-res224_clip-kinetics710-pre_u16_kinetics400-rgb_20221219-6dc86d05.pth"
 
+# dataset settings
 dataset_type = "VideoDataset"
 data_root = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/panaf_20k/data"
-ann_file_train = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/annotations/mmaction2/cns_binary/train.txt"
-ann_file_val = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/annotations/mmaction2/cns_binary/val.txt"
-ann_file_test = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/annotations/mmaction2/cns_binary/test.txt"
+ann_file_train = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/panaf_20k/annotations/mmaction2/multilabel/train.txt"
+ann_file_val = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/panaf_20k/annotations/mmaction2/multilabel/val.txt"
+ann_file_test = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/panaf_20k/annotations/mmaction2/multilabel/test.txt"
 
 file_client_args = dict(io_backend="disk")
 
 num_frames = 16
-batch_size = 8
-num_classes = 2
+batch_size = 3
+num_classes = 18
 
 # model settings
 model = dict(
@@ -41,6 +42,8 @@ model = dict(
     cls_head=dict(
         type="TimeSformerHead",
         num_classes=num_classes,
+        loss_cls=dict(type="BCELossWithLogits"),
+        multi_class=True,
     ),
     data_preprocessor=dict(
         type="ActionDataPreprocessor",
@@ -125,7 +128,6 @@ test_dataloader = dict(
         num_classes=num_classes,
     ),
 )
-
 
 base_lr = 2e-5
 optim_wrapper = dict(
