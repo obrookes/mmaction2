@@ -3,16 +3,16 @@ _base_ = ["../../_base_/default_runtime.py"]
 load_from = "pretrained_models/vit-base-p16_videomaev2-vit-g-dist-k710-pre_16x4x1_kinetics-400_20230510-3e7f93b2.pth"
 
 dataset_type = "VideoDataset"
-data_root = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/chimp_videos/all"
-ann_file_train = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/annotations/mmaction2/mm_binary/train.txt"
-ann_file_val = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/annotations/mmaction2/mm_binary/val.txt"
-ann_file_test = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/annotations/mmaction2/mm_binary/test.txt"
+data_root = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/all"
+ann_file_train = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/mmaction2_annotations/mmaction2/train.txt"
+ann_file_val = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/mmaction2_annotations/mmaction2/val.txt"
+ann_file_test = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/mmaction2_annotations/mmaction2/test.txt"
 
 file_client_args = dict(io_backend="disk")
 
 num_frames = 16
 batch_size = 8
-num_classes = 2
+num_classes = 18
 
 # model settings
 model = dict(
@@ -33,6 +33,7 @@ model = dict(
         type="TimeSformerHead",
         num_classes=num_classes,
         in_channels=768,
+        loss_cls=dict(type="BCELossWithLogits"),
         multi_class=True,
     ),
     data_preprocessor=dict(
@@ -66,10 +67,9 @@ val_pipeline = [
     dict(type="PackActionInputs"),
 ]
 
-
 test_pipeline = [
     dict(type="DecordInit"),
-    dict(type="SampleFrames", clip_len=num_frames, num_clips=1, test_mode=True),
+    dict(type="SampleFrames", clip_len=16, num_clips=1, test_mode=True),
     dict(type="DecordDecode"),
     dict(type="Resize", scale=(-1, 224)),
     dict(type="ThreeCrop", crop_size=224),
@@ -88,6 +88,7 @@ train_dataloader = dict(
         data_prefix=dict(video=data_root),
         pipeline=train_pipeline,
         num_classes=num_classes,
+        multi_class=True,
     ),
 )
 val_dataloader = dict(
@@ -102,6 +103,7 @@ val_dataloader = dict(
         pipeline=val_pipeline,
         test_mode=True,
         num_classes=num_classes,
+        multi_class=True,
     ),
 )
 
@@ -117,6 +119,7 @@ test_dataloader = dict(
         pipeline=test_pipeline,
         test_mode=True,
         num_classes=num_classes,
+        multi_class=True,
     ),
 )
 
@@ -147,8 +150,7 @@ param_scheduler = [
     ),
 ]
 
-
-train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=50, val_begin=1, val_interval=1)
+train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=24, val_begin=1, val_interval=1)
 val_cfg = dict(type="ValLoop")
 test_cfg = dict(type="TestLoop")
 
