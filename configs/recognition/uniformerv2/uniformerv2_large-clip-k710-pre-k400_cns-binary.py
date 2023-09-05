@@ -43,6 +43,7 @@ model = dict(
         type="TimeSformerHead",
         in_channels=1024,
         num_classes=num_classes,
+        average_clips="prob",
         multi_class=True,
     ),
     data_preprocessor=dict(

@@ -41,6 +41,7 @@ model = dict(
     ),
     cls_head=dict(
         type="TimeSformerHead",
+        average_clips="prob",
         in_channels=1024,
         num_classes=2,
         multi_class=True,

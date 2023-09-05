@@ -31,6 +31,7 @@ model = dict(
     ),
     cls_head=dict(
         type="TimeSformerHead",
+        average_clips="prob",
         num_classes=num_classes,
         in_channels=768,
         loss_cls=dict(type="BCELossWithLogits"),
