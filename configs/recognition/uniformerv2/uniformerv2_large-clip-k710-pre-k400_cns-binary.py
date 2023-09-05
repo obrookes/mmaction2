@@ -3,10 +3,10 @@ _base_ = ["../../_base_/default_runtime.py"]
 load_from = "pretrained_models/uniformerv2-large-p14-res224_clip-kinetics710-pre_u16_kinetics400-rgb_20221219-6dc86d05.pth"
 
 dataset_type = "VideoDataset"
-data_root = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/all"
-ann_file_train = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/annotations/mmaction2/mm_binary/train.txt"
-ann_file_val = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/annotations/mmaction2/mm_binary/val.txt"
-ann_file_test = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/annotations/mmaction2/mm_binary/test.txt"
+data_root = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/panaf_20k/data"
+ann_file_train = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/annotations/mmaction2/cns_binary/train.txt"
+ann_file_val = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/annotations/mmaction2/cns_binary/val.txt"
+ann_file_test = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/annotations/mmaction2/cns_binary/test.txt"
 
 file_client_args = dict(io_backend="disk")
 
@@ -72,7 +72,7 @@ val_pipeline = [
 
 test_pipeline = [
     dict(type="DecordInit"),
-    dict(type="UniformSample", clip_len=num_frames, num_clips=4, test_mode=True),
+    dict(type="UniformSample", clip_len=num_frames, num_clips=1, test_mode=True),
     dict(type="DecordDecode"),
     dict(type="Resize", scale=(-1, 224)),
     dict(type="ThreeCrop", crop_size=224),
@@ -166,4 +166,4 @@ default_hooks = dict(checkpoint=dict(interval=3, max_keep_ckpts=3))
 #   - `enable` means enable scaling LR automatically
 #       or not by default.
 #   - `base_batch_size` = (1 GPUs) x (16 samples per GPU).
-auto_scale_lr = dict(enable=True, base_batch_size=8)
+auto_scale_lr = dict(enable=True, base_batch_size=batch_size)
