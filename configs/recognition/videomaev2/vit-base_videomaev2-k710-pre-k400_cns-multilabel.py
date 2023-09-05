@@ -88,6 +88,7 @@ train_dataloader = dict(
         data_prefix=dict(video=data_root),
         pipeline=train_pipeline,
         num_classes=num_classes,
+        multi_class=True,
     ),
 )
 val_dataloader = dict(
@@ -102,6 +103,7 @@ val_dataloader = dict(
         pipeline=val_pipeline,
         test_mode=True,
         num_classes=num_classes,
+        multi_class=True,
     ),
 )
 
@@ -117,6 +119,7 @@ test_dataloader = dict(
         pipeline=test_pipeline,
         test_mode=True,
         num_classes=num_classes,
+        multi_class=True,
     ),
 )
 

@@ -31,7 +31,7 @@ model = dict(
     ),
     cls_head=dict(
         type="TimeSformerHead",
-        num_classes=2,
+        num_classes=num_classes,
         in_channels=768,
         multi_class=True,
     ),

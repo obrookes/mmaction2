@@ -106,7 +106,7 @@ val_dataloader = dict(
 )
 
 test_dataloader = dict(
-    batch_size=1,
+    batch_size=batch_size,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type="DefaultSampler", shuffle=False),
