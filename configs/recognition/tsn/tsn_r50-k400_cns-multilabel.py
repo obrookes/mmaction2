@@ -9,9 +9,9 @@ load_from = "pretrained_models/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kine
 # dataset settings
 dataset_type = "VideoDataset"
 data_root = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/panaf_20k/data"
-ann_file_train = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/panaf_20k/data/train.txt"
-ann_file_val = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/panaf_20k/data/val.txt"
-ann_file_test = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/panaf_20k/data/test.txt"
+ann_file_train = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/panaf_20k/annotations/mmaction2/multilabel/train.txt"
+ann_file_val = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/panaf_20k/annotations/mmaction2/multilabel/val.txt"
+ann_file_test = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/panaf_20k/annotations/mmaction2/multilabel/test.txt"
 
 file_client_args = dict(io_backend="disk")
 
