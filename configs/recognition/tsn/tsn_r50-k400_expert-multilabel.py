@@ -4,18 +4,14 @@ _base_ = [
     "../../_base_/default_runtime.py",
 ]
 
-load_from = (
-    "pretrained_models/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb_20220906-cd10898e.pth"
-)
+load_from = "pretrained_models/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb_20220906-cd10898e.pth"
 
 # dataset settings
 dataset_type = "VideoDataset"
 data_root = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/all"
-data_root_val = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/all"
-data_root_test = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/all"
-ann_file_train = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/mmaction2_annotations/mmaction2/train.txt"
-ann_file_val = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/mmaction2_annotations/mmaction2/val.txt"
-ann_file_test = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/mmaction2_annotations/mmaction2/test.txt"
+ann_file_train = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/annotations/mmaction2/expert_multilabel/train.txt"
+ann_file_val = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/annotations/mmaction2/expert_multilabel/val.txt"
+ann_file_test = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/annotations/mmaction2/expert_multilabel/test.txt"
 
 file_client_args = dict(io_backend="disk")
 
