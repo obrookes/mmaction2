@@ -13,7 +13,7 @@ file_client_args = dict(io_backend="disk")
 
 num_frames = 16
 batch_size = 3
-num_classes = 18
+num_classes = 4
 
 # model settings
 model = dict(
