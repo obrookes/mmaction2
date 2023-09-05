@@ -33,6 +33,7 @@ model = dict(
         type="TimeSformerHead",
         num_classes=2,
         in_channels=768,
+        multi_class=True,
     ),
     data_preprocessor=dict(
         type="ActionDataPreprocessor",
@@ -105,7 +106,7 @@ val_dataloader = dict(
 )
 
 test_dataloader = dict(
-    batch_size=1,
+    batch_size=batch_size,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type="DefaultSampler", shuffle=False),
@@ -121,6 +122,7 @@ test_dataloader = dict(
 
 base_lr = 2e-5
 optim_wrapper = dict(
+    type="AmpOptimWrapper",
     optimizer=dict(type="AdamW", lr=base_lr, betas=(0.9, 0.999), weight_decay=0.05),
     paramwise_cfg=dict(norm_decay_mult=0.0, bias_decay_mult=0.0),
     clip_grad=dict(max_norm=20, norm_type=2),
