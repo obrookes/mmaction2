@@ -81,7 +81,7 @@ val_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         ann_file=ann_file_val,
-        data_prefix=dict(video=data_root_val),
+        data_prefix=dict(video=data_root),
         pipeline=val_pipeline,
         test_mode=True,
         multi_class=True,
@@ -96,7 +96,7 @@ test_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         ann_file=ann_file_val,
-        data_prefix=dict(video=data_root_val),
+        data_prefix=dict(video=data_root),
         pipeline=test_pipeline,
         test_mode=True,
         multi_class=True,
