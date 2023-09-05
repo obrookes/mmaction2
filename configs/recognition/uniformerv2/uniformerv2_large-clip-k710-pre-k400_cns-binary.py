@@ -37,11 +37,13 @@ model = dict(
         mlp_factor=4.0,
         drop_path_rate=0.0,
         mlp_dropout=[0.5, 0.5, 0.5, 0.5],
+        clip_pretrained=False,
     ),
     cls_head=dict(
         type="TimeSformerHead",
         in_channels=1024,
         num_classes=num_classes,
+        multi_class=True,
     ),
     data_preprocessor=dict(
         type="ActionDataPreprocessor",
