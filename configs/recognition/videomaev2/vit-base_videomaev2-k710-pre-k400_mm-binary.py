@@ -165,3 +165,5 @@ test_evaluator = dict(type="AccMetric")
 test_cfg = dict(type="TestLoop")
 
 auto_scale_lr = dict(enable=True, base_batch_size=batch_size)
+
+visualizer = dict(type="Visualizer", vis_backends=[dict(type="WandbVisBackend")])

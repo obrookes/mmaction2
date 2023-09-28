@@ -177,3 +177,5 @@ default_hooks = dict(checkpoint=dict(interval=3, max_keep_ckpts=3))
 #       or not by default.
 #   - `base_batch_size` = (1 GPUs) x (16 samples per GPU).
 auto_scale_lr = dict(enable=True, base_batch_size=batch_size)
+
+visualizer = dict(type="Visualizer", vis_backends=[dict(type="WandbVisBackend")])
