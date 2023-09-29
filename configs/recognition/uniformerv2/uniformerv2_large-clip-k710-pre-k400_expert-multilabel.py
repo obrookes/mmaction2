@@ -162,13 +162,12 @@ param_scheduler = [
     ),
 ]
 
+val_evaluator = dict(type="AccMetric", metric_list=("mean_average_precision"))
+test_evaluator = dict(type="AccMetric", metric_list=("mean_average_precision"))
+
 train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=4, val_begin=1, val_interval=1)
 val_cfg = dict(type="ValLoop")
 test_cfg = dict(type="TestLoop")
-
-train_evaluator = dict(type="AccMetric", metric_list=("mean_average_precision"))
-val_evaluator = dict(type="AccMetric", metric_list=("mean_average_precision"))
-test_evaluator = dict(type="AccMetric", metric_list=("mean_average_precision"))
 
 default_hooks = dict(checkpoint=dict(interval=3, max_keep_ckpts=3))
 
@@ -177,15 +176,3 @@ default_hooks = dict(checkpoint=dict(interval=3, max_keep_ckpts=3))
 #       or not by default.
 #   - `base_batch_size` = (1 GPUs) x (16 samples per GPU).
 auto_scale_lr = dict(enable=True, base_batch_size=batch_size)
-
-visualizer = dict(
-    type="Visualizer",
-    vis_backends=[
-        dict(
-            type="WandbVisBackend",
-            define_metric_cfg=[
-                dict(name="acc/mean_average_precision", step_metric="step")
-            ],
-        ),
-    ],
-)
