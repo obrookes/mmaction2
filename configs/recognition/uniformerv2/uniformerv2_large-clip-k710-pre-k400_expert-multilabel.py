@@ -183,7 +183,7 @@ visualizer = dict(
     vis_backends=[
         dict(
             type="WandbVisBackend",
-            define_metric_cfg=dict(name="acc/mean_average_precision"),
+            define_metric_cfg=dict(name="mAP"),
         ),
     ],
 )
