@@ -163,7 +163,7 @@ param_scheduler = [
 
 val_evaluator = dict(
     type="AccMetric",
-    metric_list=("mean_average_precision", "top_k_accuracy", "mean_class_accuracy"),
+    metric_list=("mean_average_precision", "top_k_accuracy"),
 )
 test_evaluator = val_evaluator
 
