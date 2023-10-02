@@ -162,7 +162,10 @@ param_scheduler = [
     ),
 ]
 
-val_evaluator = dict(type="AccMetric", metric_list=("mean_average_precision"))
+val_evaluator = dict(
+    type="AccMetric",
+    metric_list=("mean_average_precision", "top_k_accuracy", "mean_class_accuracy"),
+)
 test_evaluator = val_evaluator
 
 train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=5, val_begin=0, val_interval=1)
