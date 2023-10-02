@@ -179,7 +179,13 @@ default_hooks = dict(
 #   - `base_batch_size` = (1 GPUs) x (16 samples per GPU).
 auto_scale_lr = dict(enable=True, base_batch_size=batch_size)
 
-vis_backends = [dict(type="LocalVisBackend"), dict(type="WandbVisBackend")]
+vis_backends = [
+    dict(type="LocalVisBackend"),
+    dict(
+        type="WandbVisBackend",
+        define_metric_cfg=[dict(name="acc/mean_average_precision", step_metric="step")],
+    ),
+]
 
 visualizer = dict(
     type="ActionVisualizer",
