@@ -170,7 +170,9 @@ val_cfg = dict(type="ValLoop")
 test_cfg = dict(type="TestLoop")
 
 default_hooks = dict(
-    checkpoint=dict(interval=5, max_keep_ckpts=1, save_best="mean_average_precision")
+    checkpoint=dict(
+        interval=5, max_keep_ckpts=1, save_best="acc/mean_average_precision"
+    )
 )
 
 # Default setting for scaling LR automatically
