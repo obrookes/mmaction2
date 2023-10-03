@@ -13,6 +13,7 @@ file_client_args = dict(io_backend="disk")
 num_frames = 16
 batch_size = 8
 num_classes = 18
+base_batch_size = 256
 
 # model settings
 model = dict(
@@ -151,18 +152,31 @@ param_scheduler = [
     ),
 ]
 
-train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=50, val_begin=1, val_interval=1)
+val_evaluator = dict(
+    type="AccMetric",
+    metric_list=("mean_average_precision"),
+)
+test_evaluator = val_evaluator
+
+train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=12, val_interval=1)
 val_cfg = dict(type="ValLoop")
 test_cfg = dict(type="TestLoop")
 
-train_evaluator = dict(type="AccMetric", metric_list=("mean_average_precision"))
-val_evaluator = dict(type="AccMetric", metric_list=("mean_average_precision"))
-test_evaluator = dict(type="AccMetric", metric_list=("mean_average_precision"))
+default_hooks = dict(
+    checkpoint=dict(
+        interval=5, max_keep_ckpts=1, save_best="acc/mean_average_precision"
+    )
+)
 
-default_hooks = dict(checkpoint=dict(interval=3, max_keep_ckpts=3))
-test_evaluator = dict(type="AccMetric")
-test_cfg = dict(type="TestLoop")
+# Default setting for scaling LR automatically
+#   - `enable` means enable scaling LR automatically
+#       or not by default.
+#   - `base_batch_size` = (4 GPUs) x (3 samples per GPU).
+auto_scale_lr = dict(enable=True, base_batch_size=base_batch_size)
 
-auto_scale_lr = dict(enable=True, base_batch_size=batch_size)
+vis_backends = [dict(type="LocalVisBackend"), dict(type="WandbVisBackend")]
 
-visualizer = dict(type="Visualizer", vis_backends=[dict(type="WandbVisBackend")])
+visualizer = dict(
+    type="ActionVisualizer",
+    vis_backends=vis_backends,
+)
