@@ -13,6 +13,7 @@ file_client_args = dict(io_backend="disk")
 num_frames = 16
 batch_size = 3
 num_classes = 2
+base_batch_size = 4 * batch_size
 
 # model settings
 model = dict(
@@ -180,8 +181,8 @@ default_hooks = dict(
 # Default setting for scaling LR automatically
 #   - `enable` means enable scaling LR automatically
 #       or not by default.
-#   - `base_batch_size` = (1 GPUs) x (16 samples per GPU).
-auto_scale_lr = dict(enable=True, base_batch_size=batch_size)
+#   - `base_batch_size` = (4 GPUs) x (3 samples per GPU).
+auto_scale_lr = dict(enable=True, base_batch_size=base_batch_size)
 
 vis_backends = [dict(type="LocalVisBackend"), dict(type="WandbVisBackend")]
 
