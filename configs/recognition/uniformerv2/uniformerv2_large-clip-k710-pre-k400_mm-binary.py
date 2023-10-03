@@ -133,7 +133,7 @@ test_dataloader = dict(
     ),
 )
 
-base_lr = 2e-5
+base_lr = 2e-6
 optim_wrapper = dict(
     type="AmpOptimWrapper",
     optimizer=dict(type="AdamW", lr=base_lr, betas=(0.9, 0.999), weight_decay=0.05),
@@ -160,15 +160,21 @@ param_scheduler = [
     ),
 ]
 
-train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=50, val_begin=1, val_interval=1)
+val_evaluator = dict(
+    type="AccMetric",
+    metric_list=("mean_average_precision", "top_k_accuracy"),
+)
+test_evaluator = val_evaluator
+
+train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=12, val_interval=1)
 val_cfg = dict(type="ValLoop")
 test_cfg = dict(type="TestLoop")
 
-train_evaluator = dict(type="AccMetric", metric_list=("mean_average_precision"))
-val_evaluator = dict(type="AccMetric", metric_list=("mean_average_precision"))
-test_evaluator = dict(type="AccMetric", metric_list=("mean_average_precision"))
-
-default_hooks = dict(checkpoint=dict(interval=3, max_keep_ckpts=3))
+default_hooks = dict(
+    checkpoint=dict(
+        interval=5, max_keep_ckpts=1, save_best="acc/mean_average_precision"
+    )
+)
 
 # Default setting for scaling LR automatically
 #   - `enable` means enable scaling LR automatically
@@ -176,4 +182,9 @@ default_hooks = dict(checkpoint=dict(interval=3, max_keep_ckpts=3))
 #   - `base_batch_size` = (1 GPUs) x (16 samples per GPU).
 auto_scale_lr = dict(enable=True, base_batch_size=batch_size)
 
-visualizer = dict(type="Visualizer", vis_backends=[dict(type="WandbVisBackend")])
+vis_backends = [dict(type="LocalVisBackend"), dict(type="WandbVisBackend")]
+
+visualizer = dict(
+    type="ActionVisualizer",
+    vis_backends=vis_backends,
+)

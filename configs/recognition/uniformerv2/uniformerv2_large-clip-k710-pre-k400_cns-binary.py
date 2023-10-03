@@ -134,7 +134,7 @@ test_dataloader = dict(
 )
 
 
-base_lr = 2e-5
+base_lr = 2e-6
 optim_wrapper = dict(
     type="AmpOptimWrapper",
     optimizer=dict(type="AdamW", lr=base_lr, betas=(0.9, 0.999), weight_decay=0.05),
@@ -167,7 +167,7 @@ val_evaluator = dict(
 )
 test_evaluator = val_evaluator
 
-train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=5, val_begin=0, val_interval=1)
+train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=12, val_interval=1)
 val_cfg = dict(type="ValLoop")
 test_cfg = dict(type="TestLoop")
 
