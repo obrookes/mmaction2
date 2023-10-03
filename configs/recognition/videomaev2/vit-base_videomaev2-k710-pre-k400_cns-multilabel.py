@@ -13,7 +13,7 @@ file_client_args = dict(io_backend="disk")
 num_frames = 16
 batch_size = 8
 num_classes = 18
-base_batch_size = 256
+base_batch_size = 512
 
 # model settings
 model = dict(
@@ -158,7 +158,7 @@ val_evaluator = dict(
 )
 test_evaluator = val_evaluator
 
-train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=12, val_interval=1)
+train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=24, val_interval=1)
 val_cfg = dict(type="ValLoop")
 test_cfg = dict(type="TestLoop")
 
