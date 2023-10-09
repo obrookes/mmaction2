@@ -125,7 +125,7 @@ test_dataloader = dict(
     ),
 )
 
-base_lr = 2e-4
+base_lr = 2e-3
 optim_wrapper = dict(
     type="AmpOptimWrapper",
     optimizer=dict(type="AdamW", lr=base_lr, betas=(0.9, 0.999), weight_decay=0.05),
