@@ -11,10 +11,10 @@ ann_file_test = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/an
 file_client_args = dict(io_backend="disk")
 
 num_frames = 16
-batch_size = 3
+batch_size = 2
 num_classes = 2
 base_batch_size = 256
-accumulative_counts = 20
+accumulative_counts = 32
 
 # model settings
 model = dict(
@@ -142,7 +142,7 @@ optim_wrapper = dict(
     optimizer=dict(type="AdamW", lr=base_lr, betas=(0.9, 0.999), weight_decay=0.05),
     paramwise_cfg=dict(norm_decay_mult=0.0, bias_decay_mult=0.0),
     clip_grad=dict(max_norm=20, norm_type=2),
-    accumulative_counts=4,
+    accumulative_counts=32,
 )
 
 param_scheduler = [
@@ -159,7 +159,7 @@ param_scheduler = [
         eta_min_ratio=1 / 20,
         by_epoch=True,
         begin=5,
-        end=24,
+        end=48,
         convert_to_iter_based=True,
     ),
 ]
@@ -170,7 +170,7 @@ val_evaluator = dict(
 )
 test_evaluator = val_evaluator
 
-train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=24, val_interval=1)
+train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=48, val_interval=1)
 val_cfg = dict(type="ValLoop")
 test_cfg = dict(type="TestLoop")
 
