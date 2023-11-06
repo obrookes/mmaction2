@@ -62,7 +62,6 @@ train_pipeline = [
     dict(type="DecordDecode"),
     dict(type="Resize", scale=(-1, 256)),
     dict(type="PytorchVideoWrapper", op="RandAugment", magnitude=7, num_layers=4),
-    dict(type="RandomResizedCrop"),
     dict(type="Resize", scale=(224, 224), keep_ratio=False),
     dict(type="Flip", flip_ratio=0.5),
     dict(type="FormatShape", input_format="NCTHW"),
@@ -157,7 +156,7 @@ param_scheduler = [
         eta_min_ratio=1 / 20,
         by_epoch=True,
         begin=5,
-        end=24,
+        end=48,
         convert_to_iter_based=True,
     ),
 ]
@@ -168,7 +167,7 @@ val_evaluator = dict(
 )
 test_evaluator = val_evaluator
 
-train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=24, val_interval=1)
+train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=48, val_interval=1)
 val_cfg = dict(type="ValLoop")
 test_cfg = dict(type="TestLoop")
 
