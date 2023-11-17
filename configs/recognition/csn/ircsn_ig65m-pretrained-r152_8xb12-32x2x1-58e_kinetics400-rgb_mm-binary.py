@@ -10,7 +10,7 @@ ann_file_test = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/an
 
 file_client_args = dict(io_backend="disk")
 
-num_frames = 32
+num_frames = 16
 batch_size = 12
 num_classes = 2
 base_batch_size = 12
