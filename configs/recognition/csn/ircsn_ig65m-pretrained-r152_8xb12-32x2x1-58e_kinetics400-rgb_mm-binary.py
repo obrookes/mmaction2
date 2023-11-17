@@ -1,6 +1,6 @@
 _base_ = ["ircsn_ig65m-pretrained-r152-bnfrozen_8xb12-32x2x1-58e_kinetics400-rgb.py"]
 
-pretrained = "pretrained_models/ircsn_from_scratch_r152_ig65m_20200807-771c4135.pth"
+pretrained = "pretrained_models/ircsn_ig65m-pretrained-r152_8xb12-32x2x1-58e_kinetics400-rgb_20220811-c7a3cc5b.pth"
 
 dataset_type = "VideoDataset"
 data_root = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/chimp_videos/all"
@@ -11,7 +11,7 @@ ann_file_test = "/jmain02/home/J2AD001/wwp02/oxb63-wwp02/data/camera_reaction/an
 file_client_args = dict(io_backend="disk")
 
 num_frames = 16
-batch_size = 2
+batch_size = 12
 num_classes = 2
 base_batch_size = 256
 accumulative_counts = 32
@@ -108,7 +108,7 @@ train_dataloader = dict(
     ),
 )
 val_dataloader = dict(
-    batch_size=batch_size,
+    batch_size=1,
     num_workers=8,
     persistent_workers=True,
     sampler=dict(type="DefaultSampler", shuffle=False),
@@ -145,7 +145,7 @@ val_evaluator = dict(
 )
 test_evaluator = val_evaluator
 
-train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=48, val_interval=1)
+train_cfg = dict(type="EpochBasedTrainLoop", max_epochs=58, val_interval=1)
 val_cfg = dict(type="ValLoop")
 test_cfg = dict(type="TestLoop")
 
