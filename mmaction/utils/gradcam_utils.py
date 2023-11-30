@@ -23,18 +23,17 @@ class GradCAM:
             https://matplotlib.org/3.3.0/tutorials/colors/colormaps.html
     """
 
-    def __init__(self,
-                 model: nn.Module,
-                 target_layer_name: str,
-                 colormap: str = 'viridis') -> None:
+    def __init__(
+        self, model: nn.Module, target_layer_name: str, colormap: str = "viridis"
+    ) -> None:
         from ..models.recognizers import Recognizer2D, Recognizer3D
+
         if isinstance(model, Recognizer2D):
             self.is_recognizer2d = True
         elif isinstance(model, Recognizer3D):
             self.is_recognizer2d = False
         else:
-            raise ValueError(
-                'GradCAM utils only support Recognizer2D & Recognizer3D.')
+            raise ValueError("GradCAM utils only support Recognizer2D & Recognizer3D.")
 
         self.model = model
         self.model.eval()
@@ -42,6 +41,7 @@ class GradCAM:
         self.target_activations = None
 
         import matplotlib.pyplot as plt
+
         self.colormap = plt.get_cmap(colormap)
         self._register_hooks(target_layer_name)
 
@@ -59,7 +59,7 @@ class GradCAM:
         def get_activations(module, input, output):
             self.target_activations = output.clone().detach()
 
-        layer_ls = layer_name.split('/')
+        layer_ls = layer_name.split("/")
         prev_module = self.model
         for layer in layer_ls:
             prev_module = prev_module._modules[layer]
@@ -68,10 +68,9 @@ class GradCAM:
         target_layer.register_forward_hook(get_activations)
         target_layer.register_backward_hook(get_gradients)
 
-    def _calculate_localization_map(self,
-                                    data: dict,
-                                    use_labels: bool,
-                                    delta=1e-20) -> tuple:
+    def _calculate_localization_map(
+        self, data: dict, use_labels: bool, delta=1e-20
+    ) -> tuple:
         """Calculate localization map for all inputs with Grad-CAM.
 
         Args:
@@ -88,10 +87,10 @@ class GradCAM:
             preds (torch.Tensor): Model predictions with shape
             (batch_size, num_classes).
         """
-        inputs = data['inputs']
+        inputs = data["inputs"]
 
         # use score before softmax
-        self.model.cls_head.average_clips = 'score'
+        self.model.cls_head.average_clips = "score"
         # model forward & backward
         results = self.model.test_step(data)
         preds = [result.pred_scores.item for result in results]
@@ -129,38 +128,57 @@ class GradCAM:
             gradients = gradients.permute(0, 2, 1, 3, 4)
             activations = activations.permute(0, 2, 1, 3, 4)
 
+            """
+            # Replace above (after else) for transformer architecture
+            grad = gradients.size()
+            if len(grad) == 3:
+                _, tg, c = grad
+
+                ########### You can edit feature_h and feature_w to support your transformer
+                feature_h = int(14)
+                feature_w = int(14)
+                ###########
+
+                tg /= (feature_h*feature_w)
+                tg = int(tg)
+                gradients = gradients.reshape(-1,tg,feature_h,feature_w,c)
+                gradients = gradients.permute(0,1,4,2,3)
+                activations = activations.reshape(-1,tg,feature_h,feature_w,c)
+                activations = activations.permute(0,1,4,2,3)
+            """
+
         # calculate & resize to [B, 1, T, H, W]
         weights = torch.mean(gradients.view(b, tg, c, -1), dim=3)
         weights = weights.view(b, tg, c, 1, 1)
-        activations = activations.view([b, tg, c] +
-                                       list(activations.size()[-2:]))
-        localization_map = torch.sum(
-            weights * activations, dim=2, keepdim=True)
+        activations = activations.view([b, tg, c] + list(activations.size()[-2:]))
+        localization_map = torch.sum(weights * activations, dim=2, keepdim=True)
         localization_map = F.relu(localization_map)
         localization_map = localization_map.permute(0, 2, 1, 3, 4)
         localization_map = F.interpolate(
-            localization_map,
-            size=(t, h, w),
-            mode='trilinear',
-            align_corners=False)
+            localization_map, size=(t, h, w), mode="trilinear", align_corners=False
+        )
 
         # Normalize the localization map.
         localization_map_min, localization_map_max = (
             torch.min(localization_map.view(b, -1), dim=-1, keepdim=True)[0],
-            torch.max(localization_map.view(b, -1), dim=-1, keepdim=True)[0])
+            torch.max(localization_map.view(b, -1), dim=-1, keepdim=True)[0],
+        )
         localization_map_min = torch.reshape(
-            localization_map_min, shape=(b, 1, 1, 1, 1))
+            localization_map_min, shape=(b, 1, 1, 1, 1)
+        )
         localization_map_max = torch.reshape(
-            localization_map_max, shape=(b, 1, 1, 1, 1))
+            localization_map_max, shape=(b, 1, 1, 1, 1)
+        )
         localization_map = (localization_map - localization_map_min) / (
-            localization_map_max - localization_map_min + delta)
+            localization_map_max - localization_map_min + delta
+        )
         localization_map = localization_map.data
 
         return localization_map.squeeze(dim=1), preds
 
-    def _alpha_blending(self, localization_map: torch.Tensor,
-                        input_imgs: torch.Tensor,
-                        alpha: float) -> torch.Tensor:
+    def _alpha_blending(
+        self, localization_map: torch.Tensor, input_imgs: torch.Tensor, alpha: float
+    ) -> torch.Tensor:
         """Blend heatmaps and model input images and get visulization results.
 
         Args:
@@ -195,17 +213,16 @@ class GradCAM:
 
         # renormalize input imgs to [0, 1]
         curr_inp = curr_inp.cpu().float()
-        curr_inp /= 255.
+        curr_inp /= 255.0
 
         # alpha blending
         blended_imgs = alpha * heatmap + (1 - alpha) * curr_inp
 
         return blended_imgs
 
-    def __call__(self,
-                 data: dict,
-                 use_labels: bool = False,
-                 alpha: float = 0.5) -> tuple:
+    def __call__(
+        self, data: dict, use_labels: bool = False, alpha: float = 0.5
+    ) -> tuple:
         """Visualize the localization maps on their corresponding inputs as
         heatmap, using Grad-CAM.
 
@@ -230,11 +247,11 @@ class GradCAM:
         # localization_map shape [B, T, H, W]
         # preds shape [batch_size, num_classes]
         localization_map, preds = self._calculate_localization_map(
-            data, use_labels=use_labels)
+            data, use_labels=use_labels
+        )
 
         # blended_imgs shape [B, T, H, W, 3]
-        blended_imgs = self._alpha_blending(localization_map, data['inputs'],
-                                            alpha)
+        blended_imgs = self._alpha_blending(localization_map, data["inputs"], alpha)
 
         # blended_imgs shape [B, T, H, W, 3]
         # preds shape [batch_size, num_classes]
