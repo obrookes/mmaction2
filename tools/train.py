@@ -6,6 +6,7 @@ import os.path as osp
 from mmengine.config import Config, DictAction
 from mmengine.runner import Runner
 
+os.environ["WANDB__SERVICE_WAIT"] = "300"
 os.environ["WANDB_MODE"] = "offline"
 
 
