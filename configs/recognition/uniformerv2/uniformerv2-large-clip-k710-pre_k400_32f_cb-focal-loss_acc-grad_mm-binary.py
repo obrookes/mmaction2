@@ -12,10 +12,10 @@ file_client_args = dict(io_backend="disk")
 
 # model settings
 num_frames = 32
-batch_size = 1
+batch_size = 2
 num_classes = 2
-base_batch_size = 256
-accumulative_counts = 4
+base_batch_size = 128
+accumulative_counts = 8
 
 model = dict(
     type="Recognizer3D",
