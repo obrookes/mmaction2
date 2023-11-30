@@ -152,4 +152,4 @@ default_hooks = dict(checkpoint=dict(interval=3, max_keep_ckpts=3))
 auto_scale_lr = dict(enable=False, base_batch_size=256)
 
 # use the pre-trained model for the whole TSN network
-load_from = "https://download.openmmlab.com/mmaction/v1.0/recognition/tsn/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb_20220906-cd10898e.pth"
+load_from = "pretrained_models/tsn_imagenet-pretrained-r50_8xb32-1x1x3-100e_kinetics400-rgb_20220906-cd10898e.pth"
