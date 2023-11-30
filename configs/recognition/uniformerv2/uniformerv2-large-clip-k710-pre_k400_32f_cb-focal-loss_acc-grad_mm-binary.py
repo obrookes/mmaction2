@@ -15,7 +15,7 @@ num_frames = 32
 batch_size = 2
 num_classes = 2
 base_batch_size = 128
-accumulative_counts = 8
+accumulative_counts = 4
 
 model = dict(
     type="Recognizer3D",
