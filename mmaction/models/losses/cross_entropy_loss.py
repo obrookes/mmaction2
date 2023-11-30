@@ -33,16 +33,17 @@ class CrossEntropyLoss(BaseWeightedLoss):
             using other losses). Defaults to None.
     """
 
-    def __init__(self,
-                 loss_weight: float = 1.0,
-                 class_weight: Optional[List[float]] = None) -> None:
+    def __init__(
+        self, loss_weight: float = 1.0, class_weight: Optional[List[float]] = None
+    ) -> None:
         super().__init__(loss_weight=loss_weight)
         self.class_weight = None
         if class_weight is not None:
             self.class_weight = torch.Tensor(class_weight)
 
-    def _forward(self, cls_score: torch.Tensor, label: torch.Tensor,
-                 **kwargs) -> torch.Tensor:
+    def _forward(
+        self, cls_score: torch.Tensor, label: torch.Tensor, **kwargs
+    ) -> torch.Tensor:
         """Forward function.
 
         Args:
@@ -57,10 +58,11 @@ class CrossEntropyLoss(BaseWeightedLoss):
         if cls_score.size() == label.size():
             # calculate loss for soft label
 
-            assert cls_score.dim() == 2, 'Only support 2-dim soft label'
-            assert len(kwargs) == 0, \
-                ('For now, no extra args are supported for soft label, '
-                 f'but get {kwargs}')
+            assert cls_score.dim() == 2, "Only support 2-dim soft label"
+            assert len(kwargs) == 0, (
+                "For now, no extra args are supported for soft label, "
+                f"but get {kwargs}"
+            )
 
             lsm = F.log_softmax(cls_score, 1)
             if self.class_weight is not None:
@@ -73,16 +75,16 @@ class CrossEntropyLoss(BaseWeightedLoss):
                 # Use weighted average as pytorch CrossEntropyLoss does.
                 # For more information, please visit https://pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html # noqa
                 loss_cls = loss_cls.sum() / torch.sum(
-                    self.class_weight.unsqueeze(0) * label)
+                    self.class_weight.unsqueeze(0) * label
+                )
             else:
                 loss_cls = loss_cls.mean()
         else:
             # calculate loss for hard label
 
             if self.class_weight is not None:
-                assert 'weight' not in kwargs, \
-                    "The key 'weight' already exists."
-                kwargs['weight'] = self.class_weight.to(cls_score.device)
+                assert "weight" not in kwargs, "The key 'weight' already exists."
+                kwargs["weight"] = self.class_weight.to(cls_score.device)
             loss_cls = F.cross_entropy(cls_score, label, **kwargs)
 
         return loss_cls
@@ -101,16 +103,17 @@ class BCELossWithLogits(BaseWeightedLoss):
             using other losses). Defaults to None.
     """
 
-    def __init__(self,
-                 loss_weight: float = 1.0,
-                 class_weight: Optional[List[float]] = None) -> None:
+    def __init__(
+        self, loss_weight: float = 1.0, class_weight: Optional[List[float]] = None
+    ) -> None:
         super().__init__(loss_weight=loss_weight)
         self.class_weight = None
         if class_weight is not None:
             self.class_weight = torch.Tensor(class_weight)
 
-    def _forward(self, cls_score: torch.Tensor, label: torch.Tensor,
-                 **kwargs) -> torch.Tensor:
+    def _forward(
+        self, cls_score: torch.Tensor, label: torch.Tensor, **kwargs
+    ) -> torch.Tensor:
         """Forward function.
 
         Args:
@@ -123,10 +126,9 @@ class BCELossWithLogits(BaseWeightedLoss):
             torch.Tensor: The returned bce loss with logits.
         """
         if self.class_weight is not None:
-            assert 'weight' not in kwargs, "The key 'weight' already exists."
-            kwargs['weight'] = self.class_weight.to(cls_score.device)
-        loss_cls = F.binary_cross_entropy_with_logits(cls_score, label,
-                                                      **kwargs)
+            assert "weight" not in kwargs, "The key 'weight' already exists."
+            kwargs["weight"] = self.class_weight.to(cls_score.device)
+        loss_cls = F.binary_cross_entropy_with_logits(cls_score, label, **kwargs)
         return loss_cls
 
 
@@ -146,11 +148,13 @@ class CBFocalLoss(BaseWeightedLoss):
         gamma (float): Hyperparameter of the focal loss. Defaults to 2.0.
     """
 
-    def __init__(self,
-                 loss_weight: float = 1.0,
-                 samples_per_cls: List[int] = [],
-                 beta: float = 0.9999,
-                 gamma: float = 2.) -> None:
+    def __init__(
+        self,
+        loss_weight: float = 1.0,
+        samples_per_cls: List[int] = [],
+        beta: float = 0.9999,
+        gamma: float = 2.0,
+    ) -> None:
         super().__init__(loss_weight=loss_weight)
         self.samples_per_cls = samples_per_cls
         self.beta = beta
@@ -161,8 +165,9 @@ class CBFocalLoss(BaseWeightedLoss):
         self.weights = weights
         self.num_classes = len(weights)
 
-    def _forward(self, cls_score: torch.Tensor, label: torch.Tensor,
-                 **kwargs) -> torch.Tensor:
+    def _forward(
+        self, cls_score: torch.Tensor, label: torch.Tensor, **kwargs
+    ) -> torch.Tensor:
         """Forward function.
 
         Args:
@@ -175,7 +180,8 @@ class CBFocalLoss(BaseWeightedLoss):
             torch.Tensor: The returned bce loss with logits.
         """
         weights = torch.tensor(self.weights).float().to(cls_score.device)
-        label_one_hot = F.one_hot(label, self.num_classes).float()
+        # label_one_hot = F.one_hot(label, self.num_classes).float()
+        label_one_hot = label
         weights = weights.unsqueeze(0)
         weights = weights.repeat(label_one_hot.shape[0], 1) * label_one_hot
         weights = weights.sum(1)
@@ -183,13 +189,15 @@ class CBFocalLoss(BaseWeightedLoss):
         weights = weights.repeat(1, self.num_classes)
 
         BCELoss = F.binary_cross_entropy_with_logits(
-            input=cls_score, target=label_one_hot, reduction='none')
+            input=cls_score, target=label_one_hot, reduction="none"
+        )
 
         modulator = 1.0
         if self.gamma:
-            modulator = torch.exp(-self.gamma * label_one_hot * cls_score -
-                                  self.gamma *
-                                  torch.log(1 + torch.exp(-1.0 * cls_score)))
+            modulator = torch.exp(
+                -self.gamma * label_one_hot * cls_score
+                - self.gamma * torch.log(1 + torch.exp(-1.0 * cls_score))
+            )
 
         loss = modulator * BCELoss
         weighted_loss = weights * loss
