@@ -12,7 +12,7 @@ file_client_args = dict(io_backend="disk")
 
 # model settings
 num_frames = 32
-batch_size = 2
+batch_size = 1
 num_classes = 2
 base_batch_size = 256
 accumulative_counts = 4
